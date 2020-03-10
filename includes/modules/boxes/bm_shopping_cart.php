@@ -5,7 +5,7 @@
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
 
-  Copyright (c) 2018 osCommerce
+  Copyright (c) 2020 osCommerce
 
   Released under the GNU General Public License
 */
@@ -54,17 +54,13 @@
           }
         }
       } else {
-        $cart_contents_string .= '<p class="list-group-item">' . MODULE_BOXES_SHOPPING_CART_BOX_CART_EMPTY . '</p>';
+        $cart_contents_string .= '<span class="list-group-item">' . MODULE_BOXES_SHOPPING_CART_BOX_CART_EMPTY . '</span>';
       }
       
-      $cart_totalised = $currencies->format($cart->show_total());
+      $cart_totalised = sprintf(MODULE_BOXES_SHOPPING_CART_BOX_CART_TOTAL, $currencies->format($cart->show_total()));
 
-              
-      ob_start();
-      include('includes/modules/boxes/templates/tpl_' . basename(__FILE__));
-      $data = ob_get_clean();
-
-      $oscTemplate->addBlock($data, $this->group);
+      $tpl_data = ['group' => $this->group, 'file' => __FILE__];
+      include 'includes/modules/block_template.php';
     }
 
     function isEnabled() {

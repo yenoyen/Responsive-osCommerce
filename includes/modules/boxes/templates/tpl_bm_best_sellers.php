@@ -1,15 +1,17 @@
-<div class="card bm-best-sellers" itemscope itemtype="http://schema.org/ItemList">
-  <meta itemprop="itemListOrder" content="http://schema.org/ItemListOrderDescending" />
-  <meta itemprop="numberOfItems" content="<?php echo (int)$num_best_sellers; ?>" />
-  <div class="card-header" itemprop="name"><?php echo MODULE_BOXES_BEST_SELLERS_BOX_TITLE; ?></div>
-  <ul class="list-group list-group-flush">
-    <?php echo $bestsellers_list; ?>
-  </ul>  
+<div class="card mb-2 bm-best-sellers">
+  <div class="card-header"><?php echo MODULE_BOXES_BEST_SELLERS_BOX_TITLE; ?></div>
+  <div class="list-group list-group-flush">
+    <?php
+    foreach ($best_sellers as $best_seller) {
+      echo '<a class="list-group-item list-group-item-action" href="' . $best_seller['link'] . '">' . $best_seller['text'] . '</a>' . PHP_EOL;
+    }
+    ?>
+  </div>
 </div>
 
 <?php
 /*
-  Copyright (c) 2018, G Burton
+  Copyright (c) 2020, G Burton
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

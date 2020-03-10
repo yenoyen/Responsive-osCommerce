@@ -4,16 +4,19 @@
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
 
-  Copyright (c) 2014 osCommerce
+  Copyright (c) 2020 osCommerce
 
   Released under the GNU General Public License
 */
 
-body { font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 0.7em; }
+* {min-height: 0.01px;}
+.form-control-feedback { position: absolute; width: auto; top: 7px; right: 45px; margin-top: 0; }
+
+#contentText { color: #000 !important; font-size: 0.8em !important; }
 
 /* links */
-a { color: #000000; font-weight: normal; text-decoration: none; }
-a:hover { text-decoration: underline; }
+#contentText a { color: #000000; font-weight: normal; text-decoration: none; }
+#contentText a:hover { text-decoration: underline; }
 
 a.headerLink { color: #ffffff; font-weight: bold; text-decoration: none; }
 a.headerLink:hover { text-decoration: underline; }
@@ -32,7 +35,6 @@ a.splitPageLink:hover { text-decoration: underline; background-color: #FFFF33; }
 .menuBoxContent { color: #616060; }
 
 /* page */
-body { background-color: #ffffff; color: #000000; margin: 0px; }
 .headerBar { background-color: #B3BAC5; }
 .headerBarContent { color: #ffffff; font-weight: bold; padding: 2px; }
 .columnLeft { background-color: #F0F1F1; border-color: #999999; border-width: 1px; border-style: solid; padding: 2px; }
@@ -121,14 +123,9 @@ FORM { display: inline; }
   padding: 2px;
 }
 
-#adminAppMenu {
-  float: left;
-  width: 150px;
-  padding: 5px;
-}
+#adminAppMenu { font-size: 0.9em !important; }
 
-#adminAppMenu h3 {
-}
+#adminAppMenu h3 { font-weight: normal; }
 
 #adminAppMenu ul {
   list-style: none;
@@ -136,16 +133,13 @@ FORM { display: inline; }
   padding: 0;
 }
 
-#contentText {
-  margin-left: 160px;
-}
-
 /* Custom jQuery UI */
-.ui-widget { }
 .ui-dialog { min-width: 500px; }
 
-/* buttons */
-
-.tdbLink a { }
-
-.tdbLink button { }
+@media (min-width: 768px) {
+  .w-md-25 { width: 25% !important; }
+  .w-md-50 { width: 50% !important; }
+  .w-md-75 { width: 75% !important; }
+  .w-md-100 { width: 100% !important; }
+  .w-md-auto { width: auto !important; }
+}

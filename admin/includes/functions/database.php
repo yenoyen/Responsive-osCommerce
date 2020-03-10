@@ -5,7 +5,7 @@
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
 
-  Copyright (c) 2013 osCommerce
+  Copyright (c) 2020 osCommerce
 
   Released under the GNU General Public License
 */
@@ -22,8 +22,8 @@
     if ( !mysqli_connect_errno() ) {
       mysqli_set_charset($$link, 'utf8');
     }
-    
-    @mysqli_query($$link, 'set session sql_mode=""');
+
+    @mysqli_query($$link, 'SET SESSION sql_mode=""');
 
     return $$link;
   }
@@ -48,7 +48,7 @@
     global $$link, $logger;
 
     if (defined('STORE_DB_TRANSACTIONS') && (STORE_DB_TRANSACTIONS == 'true')) {
-      if (!is_object($logger)) $logger = new logger;
+      if (!is_object($logger)) $logger = new logger();
       $logger->write($query, 'QUERY');
     }
 
@@ -59,18 +59,20 @@
 
   function tep_db_perform($table, $data, $action = 'insert', $parameters = '', $link = 'db_link') {
     if ($action == 'insert') {
-      $query = 'insert into ' . $table . ' (';
+      $query = 'INSERT INTO ' . $table . ' (';
       foreach (array_keys($data) as $columns) {
         $query .= $columns . ', ';
       }
-      $query = substr($query, 0, -2) . ') values (';
+      $query = substr($query, 0, -2) . ') VALUES (';
       foreach ($data as $value) {
         switch ((string)$value) {
+          case 'NOW()':
           case 'now()':
-            $query .= 'now(), ';
+            $query .= 'NOW(), ';
             break;
+          case 'NULL':
           case 'null':
-            $query .= 'null, ';
+            $query .= 'NULL, ';
             break;
           default:
             $query .= '\'' . tep_db_input($value) . '\', ';
@@ -79,21 +81,23 @@
       }
       $query = substr($query, 0, -2) . ')';
     } elseif ($action == 'update') {
-      $query = 'update ' . $table . ' set ';
+      $query = 'UPDATE ' . $table . ' SET ';
       foreach ($data as $columns => $value) {
         switch ((string)$value) {
+          case 'NOW()':
           case 'now()':
-            $query .= $columns . ' = now(), ';
+            $query .= $columns . ' = NOW(), ';
             break;
+          case 'NULL':
           case 'null':
-            $query .= $columns .= ' = null, ';
+            $query .= $columns .= ' = NULL, ';
             break;
           default:
             $query .= $columns . ' = \'' . tep_db_input($value) . '\', ';
             break;
         }
       }
-      $query = substr($query, 0, -2) . ' where ' . $parameters;
+      $query = substr($query, 0, -2) . ' WHERE ' . $parameters;
     }
 
     return tep_db_query($query, $link);
@@ -149,14 +153,15 @@
   function tep_db_prepare_input($string) {
     if (is_string($string)) {
       return trim(stripslashes($string));
-    } elseif (is_array($string)) {
+    }
+
+    if (is_array($string)) {
       foreach ($string as $key => $value) {
         $string[$key] = tep_db_prepare_input($value);
       }
-      return $string;
-    } else {
-      return $string;
     }
+
+    return $string;
   }
 
   function tep_db_affected_rows($link = 'db_link') {
@@ -170,110 +175,3 @@
 
     return mysqli_get_server_info($$link);
   }
-
-  if ( !function_exists('mysqli_connect') ) {
-    define('MYSQLI_ASSOC', MYSQL_ASSOC);
-
-    function mysqli_connect($server, $username, $password, $database) {
-      if ( substr($server, 0, 2) == 'p:' ) {
-        $link = mysql_pconnect(substr($server, 2), $username, $password);
-      } else {
-        $link = mysql_connect($server, $username, $password);
-      }
-
-      if ( $link ) {
-        mysql_select_db($database, $link);
-      }
-
-      return $link;
-    }
-
-    function mysqli_connect_errno($link = null) {
-      if ( is_null($link) ) {
-        return mysql_errno();
-      }
-
-      return mysql_errno($link);
-    }
-
-    function mysqli_connect_error($link = null) {
-      if ( is_null($link) ) {
-        return mysql_error();
-      }
-
-      return mysql_error($link);
-    }
-
-    function mysqli_set_charset($link, $charset) {
-      if ( function_exists('mysql_set_charset') ) {
-        return mysql_set_charset($charset, $link);
-      }
-    }
-
-    function mysqli_close($link) {
-      return mysql_close($link);
-    }
-
-    function mysqli_query($link, $query) {
-      return mysql_query($query, $link);
-    }
-
-    function mysqli_errno($link = null) {
-      if ( is_null($link) ) {
-        return mysql_errno();
-      }
-
-      return mysql_errno($link);
-    }
-
-    function mysqli_error($link = null) {
-      if ( is_null($link) ) {
-        return mysql_error();
-      }
-
-      return mysql_error($link);
-    }
-
-    function mysqli_fetch_array($query, $type) {
-      return mysql_fetch_array($query, $type);
-    }
-
-    function mysqli_num_rows($query) {
-      return mysql_num_rows($query);
-    }
-
-    function mysqli_data_seek($query, $offset) {
-      return mysql_data_seek($query, $offset);
-    }
-
-    function mysqli_insert_id($link) {
-      return mysql_insert_id($link);
-    }
-
-    function mysqli_free_result($query) {
-      return mysql_free_result($query);
-    }
-
-    function mysqli_fetch_field($query) {
-      return mysql_fetch_field($query);
-    }
-
-    function mysqli_real_escape_string($link, $string) {
-      if ( function_exists('mysql_real_escape_string') ) {
-        return mysql_real_escape_string($string, $link);
-      } elseif ( function_exists('mysql_escape_string') ) {
-        return mysql_escape_string($string);
-      }
-
-      return addslashes($string);
-    }
-
-    function mysqli_affected_rows($link) {
-      return mysql_affected_rows($link);
-    }
-
-    function mysqli_get_server_info($link) {
-      return mysql_get_server_info($link);
-    }
-  }
-?>

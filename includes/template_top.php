@@ -12,6 +12,8 @@
 
   $oscTemplate->buildBlocks();
   
+  $OSCOM_Hooks->call('siteWide', 'injectRedirects');
+  
   if (!$oscTemplate->hasBlocks('boxes_column_left')) {
     $oscTemplate->setGridContentWidth($oscTemplate->getGridContentWidth() + $oscTemplate->getGridColumnWidth());
   }
@@ -29,29 +31,35 @@
 <title><?php echo tep_output_string_protected($oscTemplate->getTitle()); ?></title>
 <base href="<?php echo (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG; ?>">
 
-<!-- bs -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<?php 
+echo $OSCOM_Hooks->call('siteWide', 'injectSiteStart');
 
-<!-- fa -->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-
-<link href="custom.css" rel="stylesheet">
-<link href="user.css" rel="stylesheet">
-
-<?php echo $oscTemplate->getBlocks('header_tags'); ?>
+echo $oscTemplate->getBlocks('header_tags'); 
+?>
 </head>
 <body>
 
-  <?php echo $oscTemplate->getContent('navigation'); ?>
+  <?php 
+  echo $OSCOM_Hooks->call('siteWide', 'injectBodyStart');
   
-  <div id="bodyWrapper" class="<?php echo BOOTSTRAP_CONTAINER; ?>">
+  echo $oscTemplate->getContent('navigation'); 
+  ?>
+  
+  <div id="bodyWrapper" class="<?php echo BOOTSTRAP_CONTAINER; ?> pt-2">
 
-    <?php 
-    $OSCOM_Hooks->register('noJs');
-    echo $OSCOM_Hooks->call('noJs', 'showMessage');
+    <?php
+    echo $OSCOM_Hooks->call('siteWide', 'injectBodyWrapperStart');
     
-    require('includes/header.php'); 
+    echo $OSCOM_Hooks->call('siteWide', 'injectBeforeHeader');
+    
+    require('includes/header.php');
+
+    echo $OSCOM_Hooks->call('siteWide', 'injectAfterHeader');    
     ?>
 
     <div class="row">
-      <div id="bodyContent" class="col order-xs-1 order-md-6">
+      <div id="bodyContent" class="col order-1 order-md-6">
+      
+        <?php
+        echo $OSCOM_Hooks->call('siteWide', 'injectBodyContentStart');
+        ?>
